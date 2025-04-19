@@ -2,3 +2,4 @@
 backend/mvnw
 backend/.gitattributes
 backend/.mvn
+.idea
