@@ -11,10 +11,8 @@ public class RegisterDTO {
     @NotBlank
     @Size(min = 3, max = 30)
     private String username;
-
     @NotBlank
     private String email;
-
     @NotBlank
     @Size(min = 6, max = 100)
     private String password;
