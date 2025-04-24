@@ -3,3 +3,4 @@ backend/mvnw
 backend/.gitattributes
 backend/.mvn
 .idea
+backend/src/main/resources/application.properties
