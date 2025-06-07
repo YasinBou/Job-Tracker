@@ -6,7 +6,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<string | null>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -36,7 +36,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchUser();
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (username: string, password: string): Promise<string | null> => {
     try {
       const res = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
@@ -49,15 +49,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (!res.ok) {
         const error = await res.json();
-        throw new Error(error.message || "Login failed");
+        return error.message || "Login failed";
       }
 
       const data = await res.json();
       setUser({ username: data.username });
+      return null; // no error
     } catch (error: any) {
-      console.error("Login error:", error.message);
+      return error.message || "Login error";
     }
   };
+
+
 
   const logout = async () => {
     await fetch("http://localhost:8080/api/auth/logout", {

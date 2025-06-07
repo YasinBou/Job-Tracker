@@ -6,20 +6,35 @@ import { Landing } from "./pages/landing/landing";
 import { Login } from "./pages/log-in/log-in";
 import { Register } from "./pages/register/register";
 import {AuthProvider, useAuth} from "./context/auth-context";
+import {PublicRoute} from "./util/public-route";
 
 function AppContent() {
   const { isAuthenticated } = useAuth();
 
   return (
       <Router>
-        <div>
-          <Navbar isLoggedIn={isAuthenticated} />
-          <Routes>
-            <Route path={LANDING_PAGE} element={<Landing />} />
-            <Route path={LOGIN_PAGE} element={<Login />} />
-            <Route path={REGISTER_PAGE} element={<Register />} />
-          </Routes>
-        </div>
+          <div>
+              <Navbar isLoggedIn={isAuthenticated} />
+              <Routes>
+                  <Route path={LANDING_PAGE} element={<Landing />} />
+                  <Route
+                      path={LOGIN_PAGE}
+                      element={
+                          <PublicRoute>
+                              <Login />
+                          </PublicRoute>
+                      }
+                  />
+                  <Route
+                      path={REGISTER_PAGE}
+                      element={
+                          <PublicRoute>
+                              <Register />
+                          </PublicRoute>
+                      }
+                  />
+              </Routes>
+          </div>
       </Router>
   );
 }
