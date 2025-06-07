@@ -2,10 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { BlueButton } from "../../components/blue-button/blue-button";
 import { NoteModal } from "../../components/note-modal/note-modal";
+import { useAuth } from "../../context/auth-context";
 
 export const Login = () => {
+  const { login } = useAuth();
+
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
@@ -18,7 +21,7 @@ export const Login = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+    login(formData.username, formData.password);
   };
 
   return (
@@ -27,10 +30,10 @@ export const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
+              type="username"
+              name="username"
+              placeholder="Username"
+              value={formData.username}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
