@@ -4,4 +4,3 @@ backend/.gitattributes
 backend/.mvn
 .idea
 backend/src/main/resources/application.properties
-backend/docker-compose.yml
