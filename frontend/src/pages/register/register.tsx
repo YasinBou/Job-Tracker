@@ -22,19 +22,28 @@ export const Register = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError(null);
+    setError(null); // Clear error when typing
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (formData.username.length < 3) {
+      setError("Username must be at least 3 characters long.");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setError("Passwords do not match.");
       return;
     }
 
     const err = await register(formData.username, formData.email, formData.password);
-
     if (err) {
       setError(err);
     } else {
@@ -52,6 +61,8 @@ export const Register = () => {
                 placeholder="Username"
                 value={formData.username}
                 onChange={handleInputChange}
+                minLength={3}
+                maxLength={30}
                 className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
             />
@@ -70,6 +81,8 @@ export const Register = () => {
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleInputChange}
+                minLength={6}
+                maxLength={100}
                 className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
             />
@@ -79,12 +92,17 @@ export const Register = () => {
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
+                minLength={6}
+                maxLength={100}
                 className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
             />
-            {error && <p className="text-red-500">{error}</p>}
+
+            {error && <p className="text-red-600 font-semibold">{error}</p>}
+
             <BlueButton title="Register" />
           </form>
+
           <p className="mt-4 text-gray-600">
             Already have an account?{" "}
             <Link to="/login" className="text-blue-500 hover:underline">
