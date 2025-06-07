@@ -3,9 +3,13 @@ package nl.jobs.backend.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import nl.jobs.backend.DTO.LoginDTO;
 import nl.jobs.backend.service.AuthService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -20,8 +24,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
-        Map<String, Object> body = authService.loginAndSetCookie(loginDTO, response);
-        return ResponseEntity.ok(body);
+        try {
+            Map<String, Object> body = authService.loginAndSetCookie(loginDTO, response);
+            return ResponseEntity.ok(body);
+        } catch (BadCredentialsException ex) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Invalid username or password");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+        }
     }
 
     @GetMapping("/me")

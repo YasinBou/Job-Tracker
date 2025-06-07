@@ -39,20 +39,27 @@ public class AuthService {
         String token = jwtUtil.generateToken(userDetails.getUsername());
 
         // Build secure cookie manually
-        String cookie = "jwt=" + token + ";"
-                + " HttpOnly;"
-                + " Secure;"
-                + " Path=/;"
-                + " Max-Age=" + (24 * 60 * 60) + ";"
-                + " SameSite=Strict";
-
-        response.setHeader("Set-Cookie", cookie);
-        response.setHeader("Cache-Control", "no-store");
-        response.setHeader("X-Content-Type-Options", "nosniff");
+        String cookie = buildCookie(token);
+        setHeaders(response, cookie);
 
         // Return user info (without token)
         Map<String, Object> body = new HashMap<>();
         body.put("username", userDetails.getUsername());
         return body;
+    }
+
+    public void setHeaders(HttpServletResponse response, String cookie) {
+        response.setHeader("Set-Cookie", cookie);
+        response.setHeader("Cache-Control", "no-store");
+        response.setHeader("X-Content-Type-Options", "nosniff");
+    }
+
+    public String buildCookie(String token) {
+        return "jwt=" + token + ";"
+                + " HttpOnly;"
+                + " Secure;"
+                + " Path=/;"
+                + " Max-Age=" + (24 * 60 * 60) + ";"
+                + " SameSite=Strict";
     }
 }
