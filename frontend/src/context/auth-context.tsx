@@ -10,12 +10,14 @@ interface AuthContextType {
     register: (username: string, email: string, password: string) => Promise<string | null>;
     logout: () => void;
     isAuthenticated: boolean;
+    loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     // On mount, try to fetch user info using existing HttpOnly cookie
     useEffect(() => {
@@ -31,6 +33,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}
                 }
             } catch (error) {
                 console.error("Failed to auto-login", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -101,6 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({children}
                 logout,
                 register,
                 isAuthenticated: !!user,
+                loading,
             }}
         >
             {children}
