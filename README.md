@@ -4,14 +4,14 @@ An application to help users track jobs they’ve applied for — a more user-fr
 
 This project is still under active development. The goal is to showcase full-stack development capabilities using a modern tech stack and containerized services.
 
-## 🚀 Tech Stack
+## Tech Stack
 
 - **Frontend**: React, TypeScript
 - **Backend**: Spring Boot (Java 17)
 - **Database**: MySQL 8 (via Docker)
 - **Auth**: JWT-based authentication
 
-## 📦 Prerequisites
+## Prerequisites
 
 Make sure you have the following installed:
 
@@ -20,7 +20,7 @@ Make sure you have the following installed:
 - Java 17
 - Maven (for building the backend)
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 ### 1. Clone the Repository
 
@@ -84,13 +84,13 @@ npm start
 
 The application will be available at [http://localhost:3000](http://localhost:3000).
 
-## 📌 Notes
+## Notes
 
 - Make sure environment variables are properly configured before starting services.
 - Application is under development; many features may be incomplete.
 - JWT authentication is used; login/registration will be required for full access.
 
-## ✨ Project Goals
+## Project Goals
 
 - Provide a better way to track job applications than spreadsheets.
 - Demonstrate modern full-stack development with Dockerized services.
