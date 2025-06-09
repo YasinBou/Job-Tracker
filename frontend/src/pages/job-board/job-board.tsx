@@ -1,6 +1,7 @@
 import { Briefcase, Plus } from "lucide-react";
 import React, { useState } from "react";
 import { AddJobModal } from "../../components/add-job-modal/add-job-modal";
+import { EditJobModal } from "../../components/edit-job-modal/edit-job-modal";
 import { JobColumn } from "../../components/job-column/job-column";
 import { Job, JobStage } from "../../types/Job";
 
@@ -45,7 +46,9 @@ const initialJobs: Job[] = [
 
 export function JobBoard() {
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingJob, setEditingJob] = useState<Job | null>(null);
   const [draggedJob, setDraggedJob] = useState<Job | null>(null);
 
   const handleDragStart = (e: React.DragEvent, job: Job) => {
@@ -76,6 +79,16 @@ export function JobBoard() {
       id: Date.now().toString(),
     };
     setJobs([...jobs, job]);
+  };
+
+  const handleEditJob = (job: Job) => {
+    setEditingJob(job);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveJob = (updatedJob: Job) => {
+    setJobs(jobs.map((job) => (job.id === updatedJob.id ? updatedJob : job)));
+    setEditingJob(null);
   };
 
   const getJobsByStage = (stage: JobStage) => {
@@ -109,7 +122,7 @@ export function JobBoard() {
               </div>
             </div>
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsAddModalOpen(true)}
               className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
             >
               <Plus className="w-5 h-5" />
@@ -152,6 +165,7 @@ export function JobBoard() {
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onDragStart={handleDragStart}
+              onEdit={handleEditJob}
               color={color}
               count={getJobsByStage(stage).length}
             />
@@ -160,9 +174,19 @@ export function JobBoard() {
       </div>
 
       <AddJobModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddJob}
+      />
+
+      <EditJobModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingJob(null);
+        }}
+        onSave={handleSaveJob}
+        job={editingJob}
       />
     </div>
   );

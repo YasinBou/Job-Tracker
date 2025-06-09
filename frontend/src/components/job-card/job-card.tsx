@@ -1,13 +1,24 @@
-import { Building2, Calendar, DollarSign, StickyNote } from "lucide-react";
+import {
+  Building2,
+  Calendar,
+  DollarSign,
+  Edit3,
+  StickyNote,
+} from "lucide-react";
 import React from "react";
 import { Job } from "../../types/Job";
 
 interface JobCardProps {
   job: Job;
   onDragStart: (e: React.DragEvent, job: Job) => void;
+  onEdit: (job: Job) => void;
 }
 
-export const JobCard: React.FC<JobCardProps> = ({ job, onDragStart }) => {
+export const JobCard = ({
+  job,
+  onDragStart,
+  onEdit,
+}: JobCardProps) => {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -16,13 +27,27 @@ export const JobCard: React.FC<JobCardProps> = ({ job, onDragStart }) => {
     });
   };
 
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    onEdit(job);
+  };
+
   return (
     <div
       draggable
       onDragStart={(e) => onDragStart(e, job)}
-      className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 cursor-move hover:shadow-md transition-all duration-200 hover:border-gray-300 group"
+      className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 cursor-move hover:shadow-md transition-all duration-200 hover:border-gray-300 group relative"
     >
-      <div className="flex justify-between items-start mb-3">
+      <button
+        onClick={handleEditClick}
+        className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-200"
+        title="Edit application"
+      >
+        <Edit3 className="w-4 h-4" />
+      </button>
+
+      <div className="flex justify-between items-start mb-3 pr-8">
         <div>
           <h3 className="font-semibold text-gray-900 text-sm mb-1 group-hover:text-gray-700">
             {job.position}

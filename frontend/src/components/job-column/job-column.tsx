@@ -9,20 +9,22 @@ interface JobColumnProps {
   onDragOver: (e: React.DragEvent) => void;
   onDrop: (e: React.DragEvent, stage: JobStage) => void;
   onDragStart: (e: React.DragEvent, job: Job) => void;
+  onEdit: (job: Job) => void;
   color: string;
   count: number;
 }
 
-export const JobColumn: React.FC<JobColumnProps> = ({
+export const JobColumn = ({
   title,
   stage,
   jobs,
   onDragOver,
   onDrop,
   onDragStart,
+  onEdit,
   color,
   count,
-}) => {
+}: JobColumnProps) => {
   const colorClasses = {
     blue: "bg-blue-50 border-blue-200",
     orange: "bg-orange-50 border-orange-200",
@@ -57,7 +59,12 @@ export const JobColumn: React.FC<JobColumnProps> = ({
           onDrop={(e) => onDrop(e, stage)}
         >
           {jobs.map((job) => (
-            <JobCard key={job.id} job={job} onDragStart={onDragStart} />
+            <JobCard
+              key={job.id}
+              job={job}
+              onDragStart={onDragStart}
+              onEdit={onEdit}
+            />
           ))}
         </div>
       </div>
