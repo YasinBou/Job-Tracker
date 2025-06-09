@@ -1,6 +1,7 @@
 package nl.jobs.backend.service;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import nl.jobs.backend.DTO.LoginDTO;
 import nl.jobs.backend.security.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,15 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
-
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-
-    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-    }
 
     public Map<String, Object> loginAndSetCookie(LoginDTO loginDTO, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
