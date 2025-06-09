@@ -4,3 +4,4 @@ backend/.gitattributes
 backend/.mvn
 .idea
 backend/src/main/resources/application.properties
+frontend/README.md
