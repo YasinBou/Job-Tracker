@@ -1,6 +1,7 @@
 package nl.jobs.backend.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import nl.jobs.backend.DTO.LoginDTO;
 import nl.jobs.backend.service.AuthService;
 import org.springframework.http.HttpStatus;
@@ -13,13 +14,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
-
     private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
