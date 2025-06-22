@@ -4,6 +4,7 @@ import {
   DollarSign,
   Edit3,
   StickyNote,
+  Trash2,
 } from "lucide-react";
 import React from "react";
 import { Job } from "../../types/Job";
@@ -12,13 +13,15 @@ interface JobCardProps {
   job: Job;
   onDragStart: (e: React.DragEvent, job: Job) => void;
   onEdit: (job: Job) => void;
+  onDelete: (job: Job) => void;
 }
 
-export const JobCard = ({
+export const JobCard: React.FC<JobCardProps> = ({
   job,
   onDragStart,
   onEdit,
-}: JobCardProps) => {
+  onDelete,
+}) => {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -33,21 +36,42 @@ export const JobCard = ({
     onEdit(job);
   };
 
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (
+      window.confirm(
+        `Are you sure you want to delete your application for the ${job.position} position at ${job.company}?`
+      )
+    ) {
+      onDelete(job);
+    }
+  };
+
   return (
     <div
       draggable
       onDragStart={(e) => onDragStart(e, job)}
       className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 cursor-move hover:shadow-md transition-all duration-200 hover:border-gray-300 group relative"
     >
-      <button
-        onClick={handleEditClick}
-        className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-200"
-        title="Edit application"
-      >
-        <Edit3 className="w-4 h-4" />
-      </button>
+      <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+        <button
+          onClick={handleEditClick}
+          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all duration-200"
+          title="Edit application"
+        >
+          <Edit3 className="w-4 h-4" />
+        </button>
+        <button
+          onClick={handleDeleteClick}
+          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-all duration-200"
+          title="Delete application"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
 
-      <div className="flex justify-between items-start mb-3 pr-8">
+      <div className="flex justify-between items-start mb-3 pr-16">
         <div>
           <h3 className="font-semibold text-gray-900 text-sm mb-1 group-hover:text-gray-700">
             {job.position}

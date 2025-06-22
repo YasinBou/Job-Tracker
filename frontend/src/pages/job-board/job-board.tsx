@@ -1,54 +1,19 @@
 import { Briefcase, Plus } from "lucide-react";
 import React, { useState } from "react";
 import { AddJobModal } from "../../components/add-job-modal/add-job-modal";
+import { DeleteConfirmModal } from "../../components/delete-confirm-modal/delete-confirm-modal";
 import { EditJobModal } from "../../components/edit-job-modal/edit-job-modal";
 import { JobColumn } from "../../components/job-column/job-column";
+import { useJobs } from "../../context/job-context";
 import { Job, JobStage } from "../../types/Job";
 
-const initialJobs: Job[] = [
-  {
-    id: "1",
-    company: "Google",
-    position: "Software Engineer",
-    salary: "$130k - $180k",
-    dateApplied: "2024-01-15",
-    stage: "applied",
-    notes: "Applied through referral",
-  },
-  {
-    id: "2",
-    company: "Microsoft",
-    position: "Senior Frontend Developer",
-    salary: "$120k - $160k",
-    dateApplied: "2024-01-10",
-    stage: "interview",
-    notes: "Technical interview scheduled for next week",
-  },
-  {
-    id: "3",
-    company: "Meta",
-    position: "Product Manager",
-    salary: "$140k - $190k",
-    dateApplied: "2024-01-05",
-    stage: "rejected",
-    notes: "Position filled internally",
-  },
-  {
-    id: "4",
-    company: "Apple",
-    position: "iOS Developer",
-    salary: "$125k - $170k",
-    dateApplied: "2024-01-20",
-    stage: "offer",
-    notes: "Offer received! Negotiating salary",
-  },
-];
-
 export function JobBoard() {
-  const [jobs, setJobs] = useState<Job[]>(initialJobs);
+  const { jobs, addJob, updateJob, deleteJob } = useJobs();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
+  const [deletingJob, setDeletingJob] = useState<Job | null>(null);
   const [draggedJob, setDraggedJob] = useState<Job | null>(null);
 
   const handleDragStart = (e: React.DragEvent, job: Job) => {
@@ -61,24 +26,16 @@ export function JobBoard() {
     e.dataTransfer.dropEffect = "move";
   };
 
-  const handleDrop = (e: React.DragEvent, newStage: JobStage) => {
+  const handleDrop = async (e: React.DragEvent, newStage: JobStage) => {
     e.preventDefault();
     if (draggedJob && draggedJob.stage !== newStage) {
-      setJobs(
-        jobs.map((job) =>
-          job.id === draggedJob.id ? { ...job, stage: newStage } : job
-        )
-      );
+      await updateJob({ ...draggedJob, stage: newStage }); // wait for updateJob to finish
     }
     setDraggedJob(null);
   };
 
-  const handleAddJob = (newJob: Omit<Job, "id">) => {
-    const job: Job = {
-      ...newJob,
-      id: Date.now().toString(),
-    };
-    setJobs([...jobs, job]);
+  const handleAddJob = async (newJob: Omit<Job, "id">) => {
+    await addJob(newJob);
   };
 
   const handleEditJob = (job: Job) => {
@@ -86,9 +43,21 @@ export function JobBoard() {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveJob = (updatedJob: Job) => {
-    setJobs(jobs.map((job) => (job.id === updatedJob.id ? updatedJob : job)));
+  const handleSaveJob = async (updatedJob: Job) => {
+    await updateJob(updatedJob);
     setEditingJob(null);
+  };
+
+  const handleDeleteJob = (jobToDelete: Job) => {
+    setDeletingJob(jobToDelete);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deletingJob) {
+      await deleteJob(deletingJob.id);
+      setDeletingJob(null);
+    }
   };
 
   const getJobsByStage = (stage: JobStage) => {
@@ -166,6 +135,7 @@ export function JobBoard() {
               onDrop={handleDrop}
               onDragStart={handleDragStart}
               onEdit={handleEditJob}
+              onDelete={handleDeleteJob}
               color={color}
               count={getJobsByStage(stage).length}
             />
@@ -187,6 +157,16 @@ export function JobBoard() {
         }}
         onSave={handleSaveJob}
         job={editingJob}
+      />
+
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setDeletingJob(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        job={deletingJob}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 package nl.jobs.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,6 +36,11 @@ public class Job {
         APPLIED,
         INTERVIEW,
         REJECTED,
-        OFFER
+        OFFER;
+
+        @JsonCreator
+        public static JobStage fromString(String value) {
+            return JobStage.valueOf(value.toUpperCase());
+        }
     }
 }

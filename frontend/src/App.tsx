@@ -7,6 +7,7 @@ import {
   REGISTER_PAGE,
 } from "./constants/routes";
 import { AuthProvider, useAuth } from "./context/auth-context";
+import { JobProvider } from "./context/job-context";
 import { JobBoard } from "./pages/job-board/job-board";
 import { Landing } from "./pages/landing/landing";
 import { Login } from "./pages/log-in/log-in";
@@ -64,7 +65,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <JobProvider>
+        <AppContent />
+      </JobProvider>
     </AuthProvider>
   );
 }
